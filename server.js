@@ -27,6 +27,7 @@ const app = express()
 const connectDB = require("./db")
 const bodyParser = require('body-parser');
 const perSonRouter=require('./routes/personroutes');
+const menueItem = require('./routes/menudata')
 const passport = require('./auth');
 // const Person = require('./persondata')
 app.use(bodyParser.json());
@@ -36,7 +37,11 @@ connectDB();
 
 
 
-const MIddlewWareAuth=passport.authenticate('local',{session:false})
+const logReqest=(req,res,next)=>{
+  console.log(`${new Date().toLocaleString()} reqest mate to ${req.orignalUrl}`);
+  next();
+}
+const MIddlewWareAuth=passport.authenticate('local', {session:false})
 
 app.get('/', function (req, res) {
   res.send('Hello World')
@@ -44,9 +49,11 @@ app.get('/', function (req, res) {
 
 
 
+
 require('dotenv').config();
-app.use("/person",MIddlewWareAuth,perSonRouter)
-const Port = process.env.PORT
+app.use("/person", perSonRouter)
+app.use("/menu",MIddlewWareAuth, menueItem)
+const Port = process.env.PORT ||3000;
 app.listen(Port, () => {
-  console.log("port is  runing", Port);
+  console.log(`Server running on http://localhost:${Port}`);
 })

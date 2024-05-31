@@ -1,17 +1,23 @@
 const express = require("express");
 const router = express.Router();
 const Person = require("../persondata");
+const passport = require("passport");
+
 
 router.post("/", async (req, res) => {
   try {
     const data = req.body;
     const newperson = new Person(data);
+    // const existingPerson = await Person.findOne({ email });
+    // if (existingPerson) {
+    //   return res.status(409).json({ error: "Email already exists" });
+    // }
     const response = await newperson.save();
     console.log("dtata saved");
     res.status(200).json(response);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "internal server erro" });
+    res.status(500).json({ error: "internal server error --->" });
   }
 });
 router.get("/", async (req, res) => {

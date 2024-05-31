@@ -1,29 +1,27 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const Person = require("./persondata");
-passport.use(
-  new LocalStrategy(async (username, password, done) => {
+
+passport.use(new LocalStrategy(async (Username, password, done) => {
     try {
-      const user = await Person.findOne({ username: username });
-      if (!user) {
-
-          return done(null, false, { message: "incorrect username" });
+        const user = await Person.findOne({ username: Username });
+        if (!user) {
+            return done(null, false, { message: "Incorrect username" });
         }
-        const ispasswordmatch = user.password === password ? true : false;
-        if (!ispasswordmatch) {
-          return done(null, user);
+
+        console.log(user.password, user.username, "umairr");
+        const isPasswordMatch = user.password === password;
+
+        if (isPasswordMatch) {
+            return done(null, user);
         } else {
-          done(null, false, { message: "Incorrect password" });
+            return done(null, false, { message: "Incorrect password" });
         }
 
-
-      
-   
     } catch (err) {
-        console.log(err);
-        res.status(500).json({ err: "internal server erro" });
+        console.log(`Error during authentication: ${err}`);
+        return done(err);
     }
-  })
-);
+}));
 
 module.exports = passport;
