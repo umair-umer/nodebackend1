@@ -26,28 +26,26 @@ const express = require('express')
 const app = express()
 const connectDB = require("./db")
 const bodyParser = require('body-parser');
-const perSonRouter=require('./routes/personroutes')
+const perSonRouter=require('./routes/personroutes');
+const passport = require('./auth');
+// const Person = require('./persondata')
 app.use(bodyParser.json());
+app.use(passport.initialize());
 connectDB();
+
+
+
+
+const MIddlewWareAuth=passport.authenticate('local',{session:false})
 
 app.get('/', function (req, res) {
   res.send('Hello World')
 })
 
 
-// app.get('/me', function (req, res) {
-//     res.send('Hello World me')
-//   })
-//   app.get('/info', function (req, res) {
-//     const inf={
-//         name:"umair",
-//         age:28,
-//         status:"married"
-//     }
-//     res.send(inf)
-//   })
+
 require('dotenv').config();
-app.use("/person",perSonRouter)
+app.use("/person",MIddlewWareAuth,perSonRouter)
 const Port = process.env.PORT
 app.listen(Port, () => {
   console.log("port is  runing", Port);
